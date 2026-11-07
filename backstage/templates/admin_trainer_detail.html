@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ t.tname }} 的負責會員{% endblock %}
+{% block content %}
+<a href="{{ url_for('manager.trainers') }}" class="text-decoration-none text-secondary small"><i class="bi bi-arrow-left"></i> 教練列表</a>
+<div class="page-head mt-2">
+    <h1>{{ t.tname }} <span class="text-secondary fs-6">{{ t.tid }}・{{ t.speciality or '' }}</span></h1>
+    <form method="post" class="d-flex gap-2">
+        <input type="hidden" name="action" value="assign">
+        <select class="form-select" name="mid" required>
+            <option value="" disabled selected>選擇會員</option>
+            {% for m in others %}<option value="{{ m.mid }}">{{ m.mid }} {{ m.mname }}</option>{% endfor %}
+        </select>
+        <button class="btn btn-accent text-nowrap" type="submit">分派</button>
+    </form>
+</div>
+<div class="panel">
+    <table class="table">
+        <thead><tr><th>會員編號</th><th>姓名</th><th>Email</th><th></th></tr></thead>
+        <tbody>
+        {% for m in members %}
+        <tr>
+            <td>{{ m.mid }}</td><td>{{ m.mname }}</td><td>{{ m.email or '' }}</td>
+            <td class="actions">
+                <form method="post" class="inline">
+                    <input type="hidden" name="action" value="unassign"><input type="hidden" name="mid" value="{{ m.mid }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit">解除</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-secondary text-center">尚未分派會員</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

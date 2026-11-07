@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}課程管理{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>課程管理</h1>
+    <a class="btn btn-accent" href="{{ url_for('manager.courses_new') }}"><i class="bi bi-plus-lg"></i> 新增課程</a>
+</div>
+<div class="panel">
+    <table class="table datatable">
+        <thead><tr><th>編號</th><th>課程</th><th>日期</th><th>時間</th><th>教室</th><th>教練</th><th class="text-end">預約／名額</th><th>狀態</th><th></th></tr></thead>
+        <tbody>
+        {% for c in courses %}
+        <tr>
+            <td>{{ c.cono }}</td>
+            <td>{{ c.coname }}</td>
+            <td data-order="{{ c.codate }}">{{ c.codate }}</td>
+            <td>{{ c.starttime|hm }}–{{ c.endtime|hm }}</td>
+            <td>{{ c.location or '' }}</td>
+            <td>{{ c.tname }}</td>
+            <td class="text-end">{{ c.occupied }} / {{ c.capacity }}</td>
+            <td>
+                {% if c.ended %}<span class="badge text-bg-secondary">已結束</span>
+                {% elif not c.upcoming %}<span class="badge text-bg-info">進行中</span>
+                {% elif c.available <= 0 %}<span class="badge text-bg-warning">額滿</span>
+                {% else %}<span class="badge text-bg-success">開放預約</span>{% endif %}
+            </td>
+            <td class="actions">
+                <a class="btn btn-sm btn-outline-dark" href="{{ url_for('manager.courses_roster', cono=c.cono) }}">點名表</a>
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manager.courses_edit', cono=c.cono) }}">編輯</a>
+                <form method="post" class="inline" onsubmit="return confirm('確定刪除「{{ c.coname }}」？此課程的預約紀錄也會一併刪除。')">
+                    <input type="hidden" name="action" value="delete"><input type="hidden" name="cono" value="{{ c.cono }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit">刪除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

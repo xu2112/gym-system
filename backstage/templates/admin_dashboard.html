@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}資料分析{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="page-head"><h1>資料分析</h1></div>
+
+<div class="row g-3 mb-3">
+    {% for label, value, icon in [('會員數', overview.members, 'people'), ('教練數', overview.trainers, 'person-badge'),
+                                  ('課程數', overview.courses, 'calendar-week'), ('待上課預約', overview.upcoming_reservations, 'calendar-check'),
+                                  ('合約總收款', overview.gross_collected|money, 'cash-stack'), ('核准退款', overview.approved_refunds|money, 'arrow-counterclockwise')] %}
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat"><div class="label"><i class="bi bi-{{ icon }}"></i> {{ label }}</div><div class="value">{{ value }}</div></div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if overview.pending_refunds or expiring %}
+<div class="alert alert-warning d-flex flex-wrap gap-3">
+    {% if overview.pending_refunds %}<span><i class="bi bi-cash-coin"></i> 有 <strong>{{ overview.pending_refunds }}</strong> 筆退款待審核，<a href="{{ url_for('manager.refunds', status='pending') }}">前往審核</a></span>{% endif %}
+    {% if expiring %}<span><i class="bi bi-alarm"></i> 有 <strong>{{ expiring|length }}</strong> 張合約 7 天內到期，<a href="{{ url_for('manager.contracts') }}">查看</a></span>{% endif %}
+</div>
+{% endif %}
+
+<div class="row g-3">
+    <div class="col-lg-7"><div class="panel"><h2>每月收款與退款</h2><div id="cashChart" class="chart"></div></div></div>
+    <div class="col-lg-5"><div class="panel"><h2>各方案淨收款</h2><div id="planChart" class="chart"></div></div></div>
+    <div class="col-lg-7"><div class="panel"><h2>課程預約率與出席率（%）</h2><div id="courseChart" class="chart"></div></div></div>
+    <div class="col-lg-5"><div class="panel"><h2>教練負責會員與授課數</h2><div id="trainerChart" class="chart"></div></div></div>
+</div>
+
+<div class="panel">
+    <h2>課程熱門排行</h2>
+    <table class="table">
+        <thead><tr><th>課程</th><th class="text-end">名額</th><th class="text-end">有效預約</th><th class="text-end">預約率</th><th class="text-end">出席</th><th class="text-end">出席率</th></tr></thead>
+        <tbody>
+        {% for c in popularity %}
+        <tr><td>{{ c.cono }} {{ c.coname }}</td><td class="text-end">{{ c.capacity }}</td><td class="text-end">{{ c.occupied }}</td>
+            <td class="text-end">{{ c.occupancy_pct }}%</td><td class="text-end">{{ c.attended }}</td>
+            <td class="text-end">{{ c.attendance_pct ~ '%' if c.attendance_pct is not none else '—' }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const D = {{ charts|tojson }};
+    const palette = ['#e8590c', '#1f2328', '#2f9e44', '#1c7ed6', '#ae3ec9', '#f59f00'];
+    function chart(id, option) {
+        const c = echarts.init(document.getElementById(id));
+        c.setOption(Object.assign({ color: palette, tooltip: { trigger: 'axis' }, grid: { left: 50, right: 20, top: 40, bottom: 40 } }, option));
+        window.addEventListener('resize', () => c.resize());
+    }
+    chart('cashChart', {
+        legend: { data: ['收款', '退款', '淨額'] },
+        xAxis: { type: 'category', data: D.cash.months },
+        yAxis: { type: 'value' },
+        series: [
+            { name: '收款', type: 'bar', data: D.cash.collected },
+            { name: '退款', type: 'bar', data: D.cash.refunded },
+            { name: '淨額', type: 'line', data: D.cash.net, smooth: true }
+        ]
+    });
+    chart('planChart', {
+        tooltip: { trigger: 'item', formatter: '{b}：{c} 元（{d}%）' },
+        legend: { bottom: 0 },
+        series: [{ type: 'pie', radius: ['40%', '68%'], center: ['50%', '45%'], data: D.plan }]
+    });
+    chart('courseChart', {
+        legend: { data: ['預約率', '出席率'] },
+        xAxis: { type: 'category', data: D.course.names, axisLabel: { interval: 0, rotate: 30 } },
+        yAxis: { type: 'value', max: 100 },
+        grid: { left: 50, right: 20, top: 40, bottom: 70 },
+        series: [
+            { name: '預約率', type: 'bar', data: D.course.occupancy },
+            { name: '出席率', type: 'bar', data: D.course.attendance }
+        ]
+    });
+    chart('trainerChart', {
+        legend: { data: ['負責會員', '授課數'] },
+        xAxis: { type: 'category', data: D.trainer.names },
+        yAxis: { type: 'value', minInterval: 1 },
+        series: [
+            { name: '負責會員', type: 'bar', data: D.trainer.members },
+            { name: '授課數', type: 'bar', data: D.trainer.courses }
+        ]
+    });
+</script>
+{% endblock %}

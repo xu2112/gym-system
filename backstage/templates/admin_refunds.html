@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}退款審核{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>退款審核</h1>
+    <div class="btn-group">
+        {% for s, t in [(None, '全部'), ('pending', '審核中'), ('approved', '已核准'), ('rejected', '已駁回')] %}
+        <a class="btn btn-sm {{ 'btn-dark' if status == s else 'btn-outline-dark' }}" href="{{ url_for('manager.refunds', status=s) }}">{{ t }}</a>
+        {% endfor %}
+    </div>
+</div>
+<div class="panel">
+    <table class="table datatable">
+        <thead><tr><th>合約</th><th>序號</th><th>會員</th><th>方案</th><th>申請日</th><th class="text-end">退款金額</th><th class="text-end">合約金額</th><th>原因</th><th>狀態</th><th></th></tr></thead>
+        <tbody>
+        {% for r in refunds %}
+        <tr>
+            <td>{{ r.cno }}</td>
+            <td>{{ r.rno }}</td>
+            <td>{{ r.mid }} {{ r.mname }}</td>
+            <td>{{ r.pname }}</td>
+            <td>{{ r.rdate }}</td>
+            <td class="text-end">{{ r.ramount|money }}</td>
+            <td class="text-end">{{ r.camount|money }}</td>
+            <td>{{ r.reason or '' }}</td>
+            <td><span class="badge text-bg-{{ r.status|badge }}">{{ r.status|label }}</span></td>
+            <td class="actions">
+                {% if r.status == 'pending' %}
+                {% for s, t, color in [('approved', '核准', 'success'), ('rejected', '駁回', 'danger')] %}
+                <form method="post" class="inline" onsubmit="return confirm('確定{{ t }}這筆 {{ r.ramount|money }} 元的退款？')">
+                    <input type="hidden" name="cno" value="{{ r.cno }}"><input type="hidden" name="rno" value="{{ r.rno }}">
+                    <input type="hidden" name="status" value="{{ s }}">
+                    <button class="btn btn-sm btn-{{ color }}" type="submit">{{ t }}</button>
+                </form>
+                {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

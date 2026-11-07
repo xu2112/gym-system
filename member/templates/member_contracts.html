@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}合約與退款{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>合約與退款</h1>
+    <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#buyModal"><i class="bi bi-cart-plus"></i> 購買方案</button>
+</div>
+
+<div class="panel">
+    <h2>我的合約</h2>
+    <table class="table datatable">
+        <thead><tr><th>合約編號</th><th>方案</th><th>簽約日</th><th>有效期間</th><th class="text-end">金額</th><th>付款方式</th><th>狀態</th><th class="text-end">可退餘額</th><th></th></tr></thead>
+        <tbody>
+        {% for c in contracts %}
+        <tr>
+            <td>{{ c.cno }}</td>
+            <td>{{ c.pname }}</td>
+            <td>{{ c.cdate }}</td>
+            <td>{{ c.startdate }} ~ {{ c.enddate }}</td>
+            <td class="text-end">{{ c.camount|money }}</td>
+            <td>{{ c.paymentmethod|label }}</td>
+            <td><span class="badge text-bg-{{ c.derived_status|badge }}">{{ c.derived_status|label }}</span></td>
+            <td class="text-end">{{ c.refundable_balance|money }}</td>
+            <td class="actions">
+                {% if c.refundable_balance > 0 %}
+                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#refundModal"
+                        data-cno="{{ c.cno }}" data-max="{{ c.refundable_balance|int }}">申請退款</button>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="panel">
+    <h2>退款紀錄</h2>
+    <table class="table datatable">
+        <thead><tr><th>合約</th><th>序號</th><th>申請日</th><th class="text-end">金額</th><th>原因</th><th>狀態</th></tr></thead>
+        <tbody>
+        {% for r in refunds %}
+        <tr>
+            <td>{{ r.cno }}（{{ r.pname }}）</td>
+            <td>{{ r.rno }}</td>
+            <td>{{ r.rdate }}</td>
+            <td class="text-end">{{ r.ramount|money }}</td>
+            <td>{{ r.reason }}</td>
+            <td><span class="badge text-bg-{{ r.status|badge }}">{{ r.status|label }}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- 購買方案 -->
+<div class="modal fade" id="buyModal" tabindex="-1">
+    <div class="modal-dialog"><form class="modal-content" method="post">
+        <input type="hidden" name="action" value="buy">
+        <div class="modal-header"><h5 class="modal-title">購買方案</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <label class="form-label">方案</label>
+            <select class="form-select mb-3" name="pid" required>
+                {% for p in plans %}<option value="{{ p.pid }}">{{ p.pname }}（{{ p.duration }} 天，{{ p.price|money }} 元）</option>{% endfor %}
+            </select>
+            <label class="form-label">開始日期</label>
+            <input class="form-control mb-3" type="date" name="startdate" value="{{ today }}" min="{{ today }}" required>
+            <label class="form-label">付款方式</label>
+            <select class="form-select" name="paymentmethod" required>
+                {% for v, t in payment_options %}<option value="{{ v }}">{{ t }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button><button class="btn btn-accent" type="submit">確認購買</button></div>
+    </form></div>
+</div>
+
+<!-- 申請退款 -->
+<div class="modal fade" id="refundModal" tabindex="-1">
+    <div class="modal-dialog"><form class="modal-content" method="post">
+        <input type="hidden" name="action" value="refund">
+        <input type="hidden" name="cno" id="refund-cno">
+        <div class="modal-header"><h5 class="modal-title">申請退款　<span class="text-secondary small" id="refund-title"></span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <label class="form-label">退款金額（最多 <span id="refund-max"></span> 元）</label>
+            <input class="form-control mb-3" type="number" name="ramount" id="refund-amount" min="1" step="1" required>
+            <label class="form-label">原因</label>
+            <textarea class="form-control" name="reason" rows="3" required></textarea>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button><button class="btn btn-danger" type="submit">送出申請</button></div>
+    </form></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.getElementById('refundModal').addEventListener('show.bs.modal', function (e) {
+        const b = e.relatedTarget;
+        document.getElementById('refund-cno').value = b.dataset.cno;
+        document.getElementById('refund-title').textContent = '合約 ' + b.dataset.cno;
+        document.getElementById('refund-max').textContent = Number(b.dataset.max).toLocaleString();
+        document.getElementById('refund-amount').max = b.dataset.max;
+    });
+</script>
+{% endblock %}

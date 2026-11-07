@@ -1,0 +1,20 @@
+<div class="form-card card border-0 shadow-sm mx-auto mt-3">
+    <div class="card-body p-4">
+        <h2 class="h5 mb-3">聯絡電話</h2>
+        <ul class="list-group mb-3">
+            {% for p in phones %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">{{ p }}
+                <form method="post" class="inline" onsubmit="return confirm('確定刪除 {{ p }}？')">
+                    <input type="hidden" name="action" value="delete_phone"><input type="hidden" name="phone" value="{{ p }}">
+                    <button class="btn btn-sm btn-link text-danger" type="submit"><i class="bi bi-trash"></i></button>
+                </form>
+            </li>
+            {% else %}<li class="list-group-item text-secondary">尚未登記電話</li>{% endfor %}
+        </ul>
+        <form method="post" class="d-flex gap-2">
+            <input type="hidden" name="action" value="add_phone">
+            <input class="form-control" name="phone" placeholder="新增電話" required maxlength="20">
+            <button class="btn btn-outline-dark text-nowrap" type="submit">新增</button>
+        </form>
+    </div>
+</div>

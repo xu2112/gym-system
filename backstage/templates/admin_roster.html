@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}點名表 {{ c.coname }}{% endblock %}
+{% block content %}
+<a href="{{ url_for('manager.courses') }}" class="text-decoration-none text-secondary small"><i class="bi bi-arrow-left"></i> 課程列表</a>
+<div class="page-head mt-2">
+    <h1>{{ c.coname }} 點名表</h1>
+    <span class="text-secondary">{{ c.codate }} {{ c.starttime|hm }}–{{ c.endtime|hm }}・{{ c.tname }} 教練</span>
+</div>
+{% if not c.ended %}<div class="alert alert-info">課程結束後才能點名。</div>{% endif %}
+<div class="panel">
+    <table class="table">
+        <thead><tr><th>會員編號</th><th>姓名</th><th>預約時間</th><th>狀態</th><th></th></tr></thead>
+        <tbody>
+        {% for r in roster %}
+        <tr class="{{ 'text-secondary' if r.bstatus == 'cancelled' }}">
+            <td>{{ r.mid }}</td><td>{{ r.mname }}</td>
+            <td class="small">{{ r.bookingtime.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td><span class="badge text-bg-{{ r.bstatus|badge }}">{{ r.bstatus|label }}</span></td>
+            <td class="actions">
+                {% if c.ended and r.bstatus != 'cancelled' %}
+                {% for s, t, color in [('attended', '出席', 'success'), ('absent', '缺席', 'danger')] if r.bstatus != s %}
+                <form method="post" class="inline">
+                    <input type="hidden" name="mid" value="{{ r.mid }}"><input type="hidden" name="status" value="{{ s }}">
+                    <button class="btn btn-sm btn-outline-{{ color }}" type="submit">{{ t }}</button>
+                </form>
+                {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-secondary text-center">還沒有人預約</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

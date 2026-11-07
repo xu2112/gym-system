@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}註冊會員{% endblock %}
+{% block content %}
+<div class="auth-card auth-card-wide card border-0 shadow-sm mx-auto">
+    <div class="card-body p-4">
+        <a href="{{ url_for('index') }}" class="text-decoration-none text-secondary small"><i class="bi bi-arrow-left"></i> 回首頁</a>
+        <h2 class="h4 mt-2 mb-4">註冊會員</h2>
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label class="form-label">姓名</label>
+                    <input class="form-control" name="mname" value="{{ form.mname }}" required maxlength="50">
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label">性別</label>
+                    <select class="form-select" name="sex" required>
+                        <option value="F" {% if form.sex == 'F' %}selected{% endif %}>女</option>
+                        <option value="M" {% if form.sex == 'M' %}selected{% endif %}>男</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email" name="email" value="{{ form.email }}" required maxlength="100">
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label">生日</label>
+                    <input class="form-control" type="date" name="birthday" value="{{ form.birthday }}" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">手機</label>
+                    <input class="form-control" name="phone" value="{{ form.phone }}" placeholder="0912345678" maxlength="20">
+                </div>
+                <hr class="my-2">
+                <div class="col-12">
+                    <label class="form-label">登入帳號</label>
+                    <input class="form-control" name="account" value="{{ form.account }}" required minlength="3" maxlength="30">
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label">密碼</label>
+                    <input class="form-control" type="password" name="password" required minlength="4">
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label">再輸入一次密碼</label>
+                    <input class="form-control" type="password" name="password2" required minlength="4">
+                </div>
+            </div>
+            <button class="btn btn-accent w-100 mt-4" type="submit">註冊</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

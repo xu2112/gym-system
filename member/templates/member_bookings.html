@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}我的預約{% endblock %}
+{% block content %}
+<div class="page-head"><h1>我的預約</h1></div>
+<div class="panel">
+    <table class="table datatable">
+        <thead><tr><th>課程</th><th>日期</th><th>時間</th><th>教室</th><th>教練</th><th>狀態</th><th>預約時間</th><th></th></tr></thead>
+        <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ b.coname }}</td>
+            <td data-order="{{ b.codate }}">{{ b.codate }}</td>
+            <td>{{ b.starttime|hm }}–{{ b.endtime|hm }}</td>
+            <td>{{ b.location }}</td>
+            <td>{{ b.tname }}</td>
+            <td><span class="badge text-bg-{{ b.bstatus|badge }}">{{ b.bstatus|label }}</span></td>
+            <td class="small text-secondary">{{ b.bookingtime.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td class="actions">
+                {% if b.bstatus == 'booked' and b.upcoming %}
+                <form method="post" class="inline" onsubmit="return confirm('確定要取消「{{ b.coname }}」嗎？')">
+                    <input type="hidden" name="cono" value="{{ b.cono }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit">取消預約</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

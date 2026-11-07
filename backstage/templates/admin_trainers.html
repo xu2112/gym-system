@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}教練管理{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>教練管理</h1>
+    <a class="btn btn-accent" href="{{ url_for('manager.trainers_new') }}"><i class="bi bi-plus-lg"></i> 新增教練</a>
+</div>
+<div class="panel">
+    <table class="table datatable">
+        <thead><tr><th>編號</th><th>姓名</th><th>專長</th><th>電話</th><th>直屬主管</th><th class="text-end">負責會員</th><th class="text-end">授課數</th><th></th></tr></thead>
+        <tbody>
+        {% for t in trainers %}
+        <tr>
+            <td>{{ t.tid }}</td>
+            <td>{{ t.tname }}</td>
+            <td>{{ t.speciality or '' }}</td>
+            <td>{{ t.tphone or '' }}</td>
+            <td>{{ t.leader_name or '—' }}</td>
+            <td class="text-end">{{ t.member_count }}</td>
+            <td class="text-end">{{ t.course_count }}</td>
+            <td class="actions">
+                <a class="btn btn-sm btn-outline-dark" href="{{ url_for('manager.trainers_detail', tid=t.tid) }}">負責會員</a>
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manager.trainers_edit', tid=t.tid) }}">編輯</a>
+                <form method="post" class="inline" onsubmit="return confirm('確定刪除教練 {{ t.tname }}？')">
+                    <input type="hidden" name="action" value="delete"><input type="hidden" name="tid" value="{{ t.tid }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" {% if t.course_count %}disabled title="有授課紀錄的教練不能刪除"{% endif %}>刪除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

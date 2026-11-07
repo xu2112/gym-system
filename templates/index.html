@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}首頁{% endblock %}
+{% block content %}
+<div class="hero text-center">
+    <div class="hero-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+    <h1 class="display-5 fw-bold mb-2">三億健身房</h1>
+    <p class="lead text-secondary mb-4">線上預約課程、管理會員合約，一站完成。</p>
+    <div class="d-flex justify-content-center gap-3">
+        <a class="btn btn-accent btn-lg px-4" href="{{ url_for('api.login') }}">登入</a>
+        <a class="btn btn-outline-dark btn-lg px-4" href="{{ url_for('api.register') }}">註冊會員</a>
+    </div>
+</div>
+<div class="row g-3 mt-4 justify-content-center">
+    {% for icon, title, text in [('calendar-plus', '課程預約', '查看剩餘名額，一鍵預約或取消'),
+                                  ('file-earmark-text', '合約與退款', '購買方案、查看合約狀態、線上申請退款'),
+                                  ('bar-chart', '營運分析', '管理者可查看收款、課程熱門度與出席率')] %}
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm text-center p-3">
+            <i class="bi bi-{{ icon }} fs-2 text-accent"></i>
+            <h5 class="mt-2">{{ title }}</h5>
+            <p class="text-secondary small mb-0">{{ text }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

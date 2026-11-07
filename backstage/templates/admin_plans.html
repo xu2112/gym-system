@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}方案管理{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>方案管理</h1>
+    <a class="btn btn-accent" href="{{ url_for('manager.plans_new') }}"><i class="bi bi-plus-lg"></i> 新增方案</a>
+</div>
+<div class="panel">
+    <table class="table datatable">
+        <thead><tr><th>編號</th><th>方案</th><th class="text-end">天數</th><th class="text-end">價格</th><th class="text-end">合約數</th><th class="text-end">銷售總額</th><th class="text-end">核准退款</th><th class="text-end">淨收款</th><th></th></tr></thead>
+        <tbody>
+        {% for p in plans %}
+        <tr>
+            <td>{{ p.pid }}</td>
+            <td>{{ p.pname }}</td>
+            <td class="text-end">{{ p.duration }}</td>
+            <td class="text-end">{{ p.price|money }}</td>
+            <td class="text-end">{{ p.contract_count }}</td>
+            <td class="text-end">{{ p.gross_amount|money }}</td>
+            <td class="text-end">{{ p.approved_refunds|money }}</td>
+            <td class="text-end fw-semibold">{{ p.net_collected|money }}</td>
+            <td class="actions">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manager.plans_edit', pid=p.pid) }}">編輯</a>
+                <form method="post" class="inline" onsubmit="return confirm('確定刪除方案 {{ p.pname }}？')">
+                    <input type="hidden" name="action" value="delete"><input type="hidden" name="pid" value="{{ p.pid }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" {% if p.contract_count %}disabled title="已有合約使用的方案不能刪除"{% endif %}>刪除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

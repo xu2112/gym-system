@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}登入{% endblock %}
+{% block content %}
+<div class="auth-card card border-0 shadow-sm mx-auto">
+    <div class="card-body p-4">
+        <a href="{{ url_for('index') }}" class="text-decoration-none text-secondary small"><i class="bi bi-arrow-left"></i> 回首頁</a>
+        <h2 class="h4 mt-2 mb-4">登入</h2>
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label">帳號</label>
+                <input class="form-control" name="account" value="{{ account or '' }}" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">密碼</label>
+                <input class="form-control" type="password" name="password" required>
+            </div>
+            <button class="btn btn-accent w-100" type="submit">登入</button>
+        </form>
+        <p class="text-center small text-secondary mt-3 mb-0">還不是會員？<a href="{{ url_for('api.register') }}">註冊</a></p>
+    </div>
+</div>
+{% endblock %}

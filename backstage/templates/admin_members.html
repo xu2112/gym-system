@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}會員管理{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>會員管理</h1>
+    <div class="d-flex gap-2">
+        <form class="d-flex gap-2" method="get">
+            <input class="form-control" name="keyword" value="{{ keyword }}" placeholder="姓名、email、電話、編號">
+            <button class="btn btn-dark text-nowrap" type="submit"><i class="bi bi-search"></i> 查詢</button>
+            {% if keyword %}<a class="btn btn-outline-secondary text-nowrap" href="{{ url_for('manager.members') }}">清除</a>{% endif %}
+        </form>
+        <a class="btn btn-accent text-nowrap" href="{{ url_for('manager.members_new') }}"><i class="bi bi-plus-lg"></i> 新增會員</a>
+    </div>
+</div>
+<div class="panel">
+    <table class="table datatable">
+        <thead><tr><th>編號</th><th>姓名</th><th>性別</th><th>生日</th><th>Email</th><th>電話</th><th>帳號</th><th class="text-end">合約數</th><th></th></tr></thead>
+        <tbody>
+        {% for m in members %}
+        <tr>
+            <td>{{ m.mid }}</td>
+            <td>{{ m.mname }}</td>
+            <td>{{ m.sex|label }}</td>
+            <td>{{ m.birthday or '' }}</td>
+            <td>{{ m.email or '' }}</td>
+            <td class="small">{{ m.phones }}</td>
+            <td>{{ m.account or '—' }}</td>
+            <td class="text-end">{{ m.contract_count }}</td>
+            <td class="actions">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manager.members_edit', mid=m.mid) }}">編輯</a>
+                <a class="btn btn-sm btn-outline-dark" href="{{ url_for('manager.contracts_new', mid=m.mid) }}">新增合約</a>
+                <form method="post" class="inline" onsubmit="return confirm('確定刪除會員 {{ m.mid }} {{ m.mname }}？其電話、帳號、預約與教練分派會一併刪除。')">
+                    <input type="hidden" name="action" value="delete"><input type="hidden" name="mid" value="{{ m.mid }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" {% if m.contract_count %}disabled title="有合約紀錄的會員不能刪除"{% endif %}>刪除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}合約管理{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>合約管理</h1>
+    <a class="btn btn-accent" href="{{ url_for('manager.contracts_new') }}"><i class="bi bi-plus-lg"></i> 新增合約</a>
+</div>
+
+{% if expiring %}
+<div class="alert alert-warning">
+    <strong><i class="bi bi-alarm"></i> 7 天內到期：</strong>
+    {% for e in expiring %}{{ e.mname }}（{{ e.cno }}，{{ e.enddate }}，剩 {{ e.days_left }} 天）{% if not loop.last %}、{% endif %}{% endfor %}
+</div>
+{% endif %}
+
+<div class="panel">
+    <table class="table datatable">
+        <thead><tr><th>合約</th><th>會員</th><th>方案</th><th>簽約日</th><th>有效期間</th><th class="text-end">金額</th><th>付款</th><th class="text-end">核准退款</th><th>狀態</th></tr></thead>
+        <tbody>
+        {% for c in contracts %}
+        <tr>
+            <td>{{ c.cno }}</td>
+            <td>{{ c.mid }} {{ c.mname }}</td>
+            <td>{{ c.pname }}</td>
+            <td>{{ c.cdate }}</td>
+            <td>{{ c.startdate }} ~ {{ c.enddate }}</td>
+            <td class="text-end">{{ c.camount|money }}</td>
+            <td>{{ c.paymentmethod|label }}</td>
+            <td class="text-end">{{ c.approved_refunds|money }}</td>
+            <td><span class="badge text-bg-{{ c.derived_status|badge }}">{{ c.derived_status|label }}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

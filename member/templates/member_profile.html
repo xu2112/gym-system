@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}個人資料{% endblock %}
+{% block content %}
+<div class="page-head"><h1>個人資料</h1></div>
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="panel">
+            <h2>基本資料　<span class="text-secondary small">會員編號 {{ me.mid }}</span></h2>
+            <form method="post">
+                <input type="hidden" name="action" value="update">
+                <div class="row g-3">
+                    <div class="col-sm-6"><label class="form-label">姓名</label><input class="form-control" name="mname" value="{{ me.mname }}" required maxlength="50"></div>
+                    <div class="col-sm-6"><label class="form-label">性別</label>
+                        <select class="form-select" name="sex"><option value="F" {% if me.sex == 'F' %}selected{% endif %}>女</option><option value="M" {% if me.sex == 'M' %}selected{% endif %}>男</option></select></div>
+                    <div class="col-sm-6"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="{{ me.email or '' }}" maxlength="100"></div>
+                    <div class="col-sm-6"><label class="form-label">生日</label><input class="form-control" type="date" name="birthday" value="{{ me.birthday or '' }}"></div>
+                </div>
+                <button class="btn btn-accent mt-3" type="submit">儲存變更</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="panel">
+            <h2>聯絡電話</h2>
+            <ul class="list-group mb-3">
+                {% for p in phones %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">{{ p }}
+                    <form method="post" class="inline" onsubmit="return confirm('確定刪除 {{ p }}？')">
+                        <input type="hidden" name="action" value="delete_phone"><input type="hidden" name="phone" value="{{ p }}">
+                        <button class="btn btn-sm btn-link text-danger" type="submit"><i class="bi bi-trash"></i></button>
+                    </form>
+                </li>
+                {% else %}<li class="list-group-item text-secondary">尚未登記電話</li>{% endfor %}
+            </ul>
+            <form method="post" class="d-flex gap-2">
+                <input type="hidden" name="action" value="add_phone">
+                <input class="form-control" name="phone" placeholder="新增電話" required maxlength="20">
+                <button class="btn btn-outline-dark text-nowrap" type="submit">新增</button>
+            </form>
+        </div>
+        <div class="panel">
+            <h2>我的教練</h2>
+            {% for t in trainers %}
+            <div class="d-flex justify-content-between border-bottom py-2"><span>{{ t.tname }} <span class="text-secondary small">{{ t.speciality }}</span></span><span class="small">{{ t.tphone }}</span></div>
+            {% else %}<p class="text-secondary mb-0">尚未分派教練</p>{% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
