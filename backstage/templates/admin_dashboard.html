@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}資料分析{% endblock %}
 {% block head %}
+<style>.stat .label i { color: #2C7DA0; }</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
 {% endblock %}
 {% block content %}
@@ -48,7 +49,7 @@
 {% block scripts %}
 <script>
     const D = {{ charts|tojson }};
-    const palette = ['#e8590c', '#1f2328', '#2f9e44', '#1c7ed6', '#ae3ec9', '#f59f00'];
+    const palette = ['#2C7DA0', '#A9D6E5', '#014F86', '#81D8D0', '#61A5C2', '#012A4A'];  // 主頁藍色系
     function chart(id, option) {
         const c = echarts.init(document.getElementById(id));
         c.setOption(Object.assign({ color: palette, tooltip: { trigger: 'axis' }, grid: { left: 50, right: 20, top: 40, bottom: 40 } }, option));
