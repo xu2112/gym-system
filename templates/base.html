@@ -19,9 +19,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark app-nav">
     <div class="container-xl">
         {% if current_user.role == 'manager' %}
-        <a class="navbar-brand" href="{{ url_for('manager.dashboard') }}"><i class="bi bi-lightning-charge-fill"></i> 三億健身房 <small class="opacity-75">後台</small></a>
+       <a class="navbar-brand" href="{{ url_for('manager.dashboard') }}">三億健身房 <small class="opacity-75">後台</small></a>
         {% else %}
-        <a class="navbar-brand" href="{{ url_for('member.courses') }}"><i class="bi bi-lightning-charge-fill"></i> 三億健身房</a>
+        <a class="navbar-brand" href="{{ url_for('member.courses') }}"> 三億健身房</a>
         {% endif %}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="nav">
