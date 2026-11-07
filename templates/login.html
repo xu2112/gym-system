@@ -7,12 +7,12 @@
         <h2 class="h4 mt-2 mb-4">登入</h2>
         <form method="post">
             <div class="mb-3">
-                <label class="form-label">帳號</label>
-                <input class="form-control" name="account" value="{{ account or '' }}" required autofocus>
+                <label class="form-label" for="f-account">帳號</label>
+                <input id="f-account" class="form-control" name="account" value="{{ account or '' }}" required autofocus>
             </div>
             <div class="mb-4">
-                <label class="form-label">密碼</label>
-                <input class="form-control" type="password" name="password" required>
+                <label class="form-label" for="f-password">密碼</label>
+                <input id="f-password" class="form-control" type="password" name="password" required>
             </div>
             <button class="btn btn-accent w-100" type="submit">登入</button>
         </form>
