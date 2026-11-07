@@ -9,11 +9,11 @@
             <form method="post">
                 <input type="hidden" name="action" value="update">
                 <div class="row g-3">
-                    <div class="col-sm-6"><label class="form-label">姓名</label><input class="form-control" name="mname" value="{{ me.mname }}" required maxlength="50"></div>
-                    <div class="col-sm-6"><label class="form-label">性別</label>
-                        <select class="form-select" name="sex"><option value="F" {% if me.sex == 'F' %}selected{% endif %}>女</option><option value="M" {% if me.sex == 'M' %}selected{% endif %}>男</option></select></div>
-                    <div class="col-sm-6"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="{{ me.email or '' }}" maxlength="100"></div>
-                    <div class="col-sm-6"><label class="form-label">生日</label><input class="form-control" type="date" name="birthday" value="{{ me.birthday or '' }}"></div>
+                    <div class="col-sm-6"><label class="form-label" for="f-mname">姓名</label><input id="f-mname" class="form-control" name="mname" value="{{ me.mname }}" required maxlength="50"></div>
+                    <div class="col-sm-6"><label class="form-label" for="f-sex">性別</label>
+                        <select id="f-sex" class="form-select" name="sex"><option value="F" {% if me.sex == 'F' %}selected{% endif %}>女</option><option value="M" {% if me.sex == 'M' %}selected{% endif %}>男</option></select></div>
+                    <div class="col-sm-6"><label class="form-label" for="f-email">Email</label><input id="f-email" class="form-control" type="email" name="email" value="{{ me.email or '' }}" maxlength="100"></div>
+                    <div class="col-sm-6"><label class="form-label" for="f-birthday">生日</label><input id="f-birthday" class="form-control" type="date" name="birthday" value="{{ me.birthday or '' }}"></div>
                 </div>
                 <button class="btn btn-accent mt-3" type="submit">儲存變更</button>
             </form>
@@ -35,7 +35,7 @@
             <form method="post" class="d-flex gap-2">
                 <input type="hidden" name="action" value="add_phone">
                 <input class="form-control" name="phone" placeholder="新增電話" required maxlength="20">
-                <button class="btn btn-outline-dark text-nowrap" type="submit">新增</button>
+                <button class="btn btn-outline-primary text-nowrap" type="submit">新增</button>
             </form>
         </div>
         <div class="panel">

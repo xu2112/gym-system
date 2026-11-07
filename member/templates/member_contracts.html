@@ -44,7 +44,7 @@
             <td>{{ r.rno }}</td>
             <td>{{ r.rdate }}</td>
             <td class="text-end">{{ r.ramount|money }}</td>
-            <td>{{ r.reason }}</td>
+            <td class="cell-wrap">{{ r.reason }}</td>
             <td><span class="badge text-bg-{{ r.status|badge }}">{{ r.status|label }}</span></td>
         </tr>
         {% endfor %}
@@ -58,14 +58,14 @@
         <input type="hidden" name="action" value="buy">
         <div class="modal-header"><h5 class="modal-title">購買方案</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body">
-            <label class="form-label">方案</label>
-            <select class="form-select mb-3" name="pid" required>
+            <label class="form-label" for="f-pid">方案</label>
+            <select id="f-pid" class="form-select mb-3" name="pid" required>
                 {% for p in plans %}<option value="{{ p.pid }}">{{ p.pname }}（{{ p.duration }} 天，{{ p.price|money }} 元）</option>{% endfor %}
             </select>
-            <label class="form-label">開始日期</label>
-            <input class="form-control mb-3" type="date" name="startdate" value="{{ today }}" min="{{ today }}" required>
-            <label class="form-label">付款方式</label>
-            <select class="form-select" name="paymentmethod" required>
+            <label class="form-label" for="f-startdate">開始日期</label>
+            <input id="f-startdate" class="form-control mb-3" type="date" name="startdate" value="{{ today }}" min="{{ today }}" required>
+            <label class="form-label" for="f-paymentmethod">付款方式</label>
+            <select id="f-paymentmethod" class="form-select" name="paymentmethod" required>
                 {% for v, t in payment_options %}<option value="{{ v }}">{{ t }}</option>{% endfor %}
             </select>
         </div>
@@ -80,10 +80,10 @@
         <input type="hidden" name="cno" id="refund-cno">
         <div class="modal-header"><h5 class="modal-title">申請退款　<span class="text-secondary small" id="refund-title"></span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body">
-            <label class="form-label">退款金額（最多 <span id="refund-max"></span> 元）</label>
+            <label class="form-label" for="refund-amount">退款金額（最多 <span id="refund-max"></span> 元）</label>
             <input class="form-control mb-3" type="number" name="ramount" id="refund-amount" min="1" step="1" required>
-            <label class="form-label">原因</label>
-            <textarea class="form-control" name="reason" rows="3" required></textarea>
+            <label class="form-label" for="f-reason">原因</label>
+            <textarea id="f-reason" class="form-control" name="reason" rows="3" required></textarea>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button><button class="btn btn-danger" type="submit">送出申請</button></div>
     </form></div>
