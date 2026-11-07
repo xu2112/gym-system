@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 {% block title %}資料分析{% endblock %}
 {% block head %}
-<style>.stat .label i { color: #2C7DA0; }</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
 {% endblock %}
 {% block content %}
 <div class="page-head"><h1>資料分析</h1></div>
 
 <div class="row g-3 mb-3">
-    {% for label, value, icon in [('會員數', overview.members, 'people'), ('教練數', overview.trainers, 'person-badge'),
-                                  ('課程數', overview.courses, 'calendar-week'), ('待上課預約', overview.upcoming_reservations, 'calendar-check'),
-                                  ('合約總收款', overview.gross_collected|money, 'cash-stack'), ('核准退款', overview.approved_refunds|money, 'arrow-counterclockwise')] %}
+    {% for label, value, unit, icon in [('會員數', overview.members, '人', 'people'), ('教練數', overview.trainers, '人', 'person-badge'),
+                                  ('課程數', overview.courses, '堂', 'calendar-week'), ('待上課預約', overview.upcoming_reservations, '筆', 'calendar-check'),
+                                  ('合約總收款', overview.gross_collected|money, '元', 'cash-stack'), ('核准退款', overview.approved_refunds|money, '元', 'arrow-counterclockwise')] %}
     <div class="col-6 col-md-4 col-xl-2">
-        <div class="stat"><div class="label"><i class="bi bi-{{ icon }}"></i> {{ label }}</div><div class="value">{{ value }}</div></div>
+        <div class="stat"><div class="label"><i class="bi bi-{{ icon }}"></i> {{ label }}</div><div class="value">{{ value }}<span class="unit">{{ unit }}</span></div></div>
     </div>
     {% endfor %}
 </div>
@@ -50,9 +49,23 @@
 <script>
     const D = {{ charts|tojson }};
     const palette = ['#2C7DA0', '#A9D6E5', '#014F86', '#81D8D0', '#61A5C2', '#012A4A'];  // 主頁藍色系
+    // 圖表字型、文字與格線顏色跟頁面一致
+    const FONT = getComputedStyle(document.body).fontFamily;
+    const axisStyle = {
+        axisLine: { lineStyle: { color: '#ced4da' } }, axisTick: { show: false },
+        axisLabel: { color: '#6c757d' }, splitLine: { lineStyle: { color: '#eef0f2' } }
+    };
+    function styleAxis(a) { return a && Object.assign({}, axisStyle, a, { axisLabel: Object.assign({}, axisStyle.axisLabel, a.axisLabel) }); }
     function chart(id, option) {
         const c = echarts.init(document.getElementById(id));
-        c.setOption(Object.assign({ color: palette, tooltip: { trigger: 'axis' }, grid: { left: 50, right: 20, top: 40, bottom: 40 } }, option));
+        if (option.xAxis) option.xAxis = styleAxis(option.xAxis);
+        if (option.yAxis) option.yAxis = styleAxis(option.yAxis);
+        c.setOption(Object.assign({
+            color: palette,
+            textStyle: { fontFamily: FONT, color: '#1f2328' },
+            tooltip: { trigger: 'axis', textStyle: { fontFamily: FONT } },
+            grid: { left: 50, right: 20, top: 40, bottom: 40 }
+        }, option, { legend: Object.assign({ textStyle: { color: '#495057' }, itemWidth: 12, itemHeight: 12 }, option.legend) }));
         window.addEventListener('resize', () => c.resize());
     }
     chart('cashChart', {
@@ -67,8 +80,9 @@
     });
     chart('planChart', {
         tooltip: { trigger: 'item', formatter: '{b}：{c} 元（{d}%）' },
-        legend: { bottom: 0 },
-        series: [{ type: 'pie', radius: ['40%', '68%'], center: ['50%', '45%'], data: D.plan }]
+        legend: { type: 'scroll', bottom: 0 },
+        series: [{ type: 'pie', radius: ['40%', '66%'], center: ['50%', '44%'], data: D.plan,
+                   itemStyle: { borderColor: '#fff', borderWidth: 2 }, label: { color: '#495057' } }]
     });
     chart('courseChart', {
         legend: { data: ['預約率', '出席率'] },

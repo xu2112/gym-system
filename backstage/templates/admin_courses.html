@@ -25,7 +25,7 @@
                 {% else %}<span class="badge text-bg-success">開放預約</span>{% endif %}
             </td>
             <td class="actions">
-                <a class="btn btn-sm btn-outline-dark" href="{{ url_for('manager.courses_roster', cono=c.cono) }}">點名表</a>
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('manager.courses_roster', cono=c.cono) }}">點名表</a>
                 <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manager.courses_edit', cono=c.cono) }}">編輯</a>
                 <form method="post" class="inline" onsubmit="return confirm('確定刪除「{{ c.coname }}」？此課程的預約紀錄也會一併刪除。')">
                     <input type="hidden" name="action" value="delete"><input type="hidden" name="cono" value="{{ c.cono }}">

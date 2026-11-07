@@ -23,7 +23,8 @@
                 <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manager.plans_edit', pid=p.pid) }}">編輯</a>
                 <form method="post" class="inline" onsubmit="return confirm('確定刪除方案 {{ p.pname }}？')">
                     <input type="hidden" name="action" value="delete"><input type="hidden" name="pid" value="{{ p.pid }}">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" {% if p.contract_count %}disabled title="已有合約使用的方案不能刪除"{% endif %}>刪除</button>
+                    {% if p.contract_count %}<span class="disabled-hint" tabindex="0" title="已有合約使用的方案不能刪除"><button class="btn btn-sm btn-outline-danger" type="button" disabled>刪除</button></span>
+                    {% else %}<button class="btn btn-sm btn-outline-danger" type="submit">刪除</button>{% endif %}
                 </form>
             </td>
         </tr>

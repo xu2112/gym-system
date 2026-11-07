@@ -19,11 +19,12 @@
             <td class="text-end">{{ t.member_count }}</td>
             <td class="text-end">{{ t.course_count }}</td>
             <td class="actions">
-                <a class="btn btn-sm btn-outline-dark" href="{{ url_for('manager.trainers_detail', tid=t.tid) }}">負責會員</a>
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('manager.trainers_detail', tid=t.tid) }}">負責會員</a>
                 <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manager.trainers_edit', tid=t.tid) }}">編輯</a>
                 <form method="post" class="inline" onsubmit="return confirm('確定刪除教練 {{ t.tname }}？')">
                     <input type="hidden" name="action" value="delete"><input type="hidden" name="tid" value="{{ t.tid }}">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" {% if t.course_count %}disabled title="有授課紀錄的教練不能刪除"{% endif %}>刪除</button>
+                    {% if t.course_count %}<span class="disabled-hint" tabindex="0" title="有授課紀錄的教練不能刪除"><button class="btn btn-sm btn-outline-danger" type="button" disabled>刪除</button></span>
+                    {% else %}<button class="btn btn-sm btn-outline-danger" type="submit">刪除</button>{% endif %}
                 </form>
             </td>
         </tr>

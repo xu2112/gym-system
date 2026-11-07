@@ -5,7 +5,7 @@
     <h1>退款審核</h1>
     <div class="btn-group">
         {% for s, t in [(None, '全部'), ('pending', '審核中'), ('approved', '已核准'), ('rejected', '已駁回')] %}
-        <a class="btn btn-sm {{ 'btn-dark' if status == s else 'btn-outline-dark' }}" href="{{ url_for('manager.refunds', status=s) }}">{{ t }}</a>
+        <a class="btn btn-sm {{ 'btn-primary' if status == s else 'btn-outline-primary' }}" href="{{ url_for('manager.refunds', status=s) }}">{{ t }}</a>
         {% endfor %}
     </div>
 </div>
@@ -22,7 +22,7 @@
             <td>{{ r.rdate }}</td>
             <td class="text-end">{{ r.ramount|money }}</td>
             <td class="text-end">{{ r.camount|money }}</td>
-            <td>{{ r.reason or '' }}</td>
+            <td class="cell-wrap">{{ r.reason or '' }}</td>
             <td><span class="badge text-bg-{{ r.status|badge }}">{{ r.status|label }}</span></td>
             <td class="actions">
                 {% if r.status == 'pending' %}
