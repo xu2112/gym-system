@@ -9,6 +9,8 @@
     --accent-mint: #81D8D0;
     --accent-tint: #EAF5F9;
     --ink: #1f2328;
+    --nav: #012A4A;      /* 導覽列：深海軍藍，與圖表最深色一致 */
+    --amber: #E8A33D;    /* 提醒色：快額滿進度條 */
 
     /* 讓 Bootstrap 的 primary 系列元件（連結、badge、outline 按鈕、focus 外框）跟著主題色 */
     --bs-primary: #2C7DA0;
@@ -23,11 +25,11 @@
     --bs-focus-ring-color: rgba(44, 125, 160, .25);
 }
 body {
-    background: #f4f5f7;
+    background: #f3f7f9;
     color: var(--ink);
     font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
 }
-.app-nav { background: var(--ink); }
+.app-nav { background: var(--nav); }
 .app-nav .nav-link.active { color: #fff; box-shadow: inset 0 -3px 0 var(--accent-soft); }
 .text-accent { color: var(--accent); }
 
@@ -60,7 +62,21 @@ body {
     --bs-btn-disabled-color: var(--accent);
     --bs-btn-disabled-border-color: var(--accent);
 }
-.text-bg-primary { color: #fff !important; background-color: var(--accent) !important; }
+
+/* ===== 狀態徽章：淡底＋深字，保留語意但降低飽和度；資訊類（已預約、進行中、未開始）統一用主題藍 =====
+   導覽列的角色徽章（text-bg-light）不受影響 */
+.badge[class*="text-bg-"]:not(.text-bg-light) { font-weight: 600; padding: .38em .6em; border: 1px solid transparent; }
+.badge.text-bg-primary, .badge.text-bg-info { color: #014F86 !important; background-color: #DCEEF5 !important; border-color: #A9D6E5; }
+.badge.text-bg-success   { color: #146C43 !important; background-color: #E3F4EA !important; border-color: #B7E1C7; }
+.badge.text-bg-warning   { color: #7A4A00 !important; background-color: #FFF1D6 !important; border-color: #F5D39A; }
+.badge.text-bg-danger    { color: #A3242F !important; background-color: #F9E3E5 !important; border-color: #EDB9BE; }
+.badge.text-bg-secondary { color: #495057 !important; background-color: #EDEFF2 !important; border-color: #DADFE4; }
+.badge.text-bg-dark      { color: #212529 !important; background-color: #DEE2E6 !important; border-color: #C8CED3; }
+
+/* ===== 提示框 ===== */
+.alert-info { --bs-alert-color: #014F86; --bs-alert-bg: var(--accent-tint); --bs-alert-border-color: var(--accent-soft); --bs-alert-link-color: #012A4A; }
+.alert-warning a { color: #7A4A00; font-weight: 600; }
+.alert-warning a:hover { color: #5C3700; }
 .form-control:focus, .form-select:focus { border-color: var(--accent-soft); box-shadow: 0 0 0 .25rem var(--bs-focus-ring-color); }
 .page-link { color: var(--accent); }
 .active > .page-link, .page-link.active { background-color: var(--accent); border-color: var(--accent); }
@@ -110,3 +126,6 @@ body {
 .course-card { border: 0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
 .course-card .seats { font-variant-numeric: tabular-nums; }
 .progress { height: 6px; }
+.progress-bar.bar-ok { background-color: var(--accent); }
+.progress-bar.bar-warn { background-color: var(--amber); }
+.progress-bar.bar-full { background-color: #adb5bd; }
