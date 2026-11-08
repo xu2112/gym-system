@@ -33,7 +33,7 @@
                     <span>已預約 {{ c.occupied }} / {{ c.capacity }}</span><span>剩 {{ c.available }} 位</span>
                 </div>
                 <div class="progress mb-3 mt-1">
-                    <div class="progress-bar {{ 'bg-secondary' if c.available <= 0 else 'bg-warning' if pct >= 70 else 'bg-success' }}" style="width: {{ pct }}%"></div>
+                    <div class="progress-bar {{ 'bar-full' if c.available <= 0 else 'bar-warn' if pct >= 70 else 'bar-ok' }}" style="width: {{ pct }}%"></div>
                 </div>
                 <div class="mt-auto">
                     {% if c.booked_by_me %}
